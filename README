@@ -1,0 +1,46 @@
+The snark source code has been modified by implementing the strategies mentioned in the BitTyrant paper and different startegies discussed in
+class.
+The modifications made in the files to make the code more competitive are as follows : 
+
+PeerCoordinator.java File :
+1) The program exits as soon as the file is downloaded completely.
+2) The MAX_CONNECTIONS have been reduced to 10
+3) The MAX_UPLOADERS have been changed to 3
+4) The PeerCoordinator class have been modified to follow singleton design to increase the efficiency of the code as it will always make 
+   same instance of the peer.
+5) The checkperiod has been reduced to 10 secs according to the BitTyrant so that checks can be made more frequently.
+6) The UnchokePeer function has been modified to implement a ranking algorithm from BitTyrant where we maintain a upload to download
+   ratio for each peer and sort them into a list of interested peers because of which we only connect to peers that give us the most data
+   back and we upload the least to them.
+7) As a result of the above implementation we only connect to peers with the best upload speed.
+8) The gotPiece function has been modified so that we can identify the peers whom we upload to are worst and remove them from our list.This
+   strategy provides protection from Sybill attacks.
+9) Every round the list of interested peers is being updated by replacing the list with best peers.
+10) A strategy is implemented to check if MAX_UPLOADERS variable in the program does not upload to more peers
+    by ensuring that the size of uploaders is less than the maximum value.
+
+PeerState.java File :
+1) The size of PARTSIZE has been doubled to 32Kb to download larger pieces.
+
+PeerCheckerTask.java File :
+1) This class has been modified so that it will choke the connection of uncooperative peers(i.e. peers which give nothing in return) and
+   allocates this slot to a more cooperative peer.
+2) It also chokes the peer who has choked us.
+3) The above implemented strategy is similar to Tit-for-Tat strategy as discussed in the class and gives protection against BitThief.
+2) A random peer is unchoked using a random function to see if it is interested and can be the best peer.
+8) The download amount and the worst download amount are compared and the peer with the worst download amount is choked.
+
+Snark.java FIle :
+1) The code is modified to support the singleton design pattern of the PeerCoordinator class to improve efficiency.
+2) We have changed the port numbers of incoming connections to use ports 10001 to 10010 to increase the torrent speed, but as a fail safe
+   mechanism when a peer is not able to make a connection on these ports it can select a port from 6881 to 6899. 
+ 
+Challenges Faced
+1) Understanding the source code and its functionality.
+2) Understanding the different cheating startegies that can be applied and implementing them.
+3) Understanding the startegy used in BitTyrant and its implementation.
+4) Understanding the function of each class.
+5) Identifying which class should be modified to implement the startegies.
+6) Debugging the code from the logs that were generated from the SnarkTank.
+
+
